@@ -1,0 +1,2 @@
+﻿random_generators.obj : error LNK2005: "class std::vector<double,class std::allocator<double> > __cdecl LCG(int,long,long,long,long)" (?LCG@@YA?AV?$vector@NV?$allocator@N@std@@@std@@HJJJJ@Z) already defined in Exercise1.obj
+C:\Users\nicolasbuchwalder\Documents\MTH9821\HW1\x64\Debug\HW1.exe : fatal error LNK1169: one or more multiply defined symbols found
