@@ -129,6 +129,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BasketAnalysis.h" />
+    <ClInclude Include="BasketMC.h" />
     <ClInclude Include="BoxMuller.h" />
     <ClInclude Include="EuropeanOption.h" />
     <ClInclude Include="HestonMC.h" />
@@ -136,6 +138,8 @@
     <ClInclude Include="LCG.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasketAnalysis.cpp" />
+    <ClCompile Include="BasketMC.cpp" />
     <ClCompile Include="BoxMuller.cpp" />
     <ClCompile Include="EuropeanOption.cpp" />
     <ClCompile Include="HestonMC.cpp" />

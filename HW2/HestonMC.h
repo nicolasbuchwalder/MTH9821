@@ -38,7 +38,7 @@ private:
 
 public:
 	// constructor
-	HestonMC(std::size_t n, std::size_t m, double _T, double _S0, double _mu, double _V0, double _Vmean, double _lambda, double _eta, double _rho);
+	HestonMC(std::size_t n, std::size_t m, double T, double S0, double mu, double V0, double Vmean, double lambda, double eta, double rho);
 
 	// main function of the class: runs all other subfunctions
 	double launchSimulation(EuropeanOption opt, bool call);

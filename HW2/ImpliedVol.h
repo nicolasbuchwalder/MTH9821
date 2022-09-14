@@ -21,7 +21,7 @@ private:
     double r_disc_; // discount by interest rate: exp(-r(T-t))
     double q_disc_; // discount by dividend rate: exp(-q(T-t))
 
-    std::vector<std::size_t> num_paths;		// number of paths
+    std::vector<std::size_t> num_paths;	// number of paths
 	std::vector<double> prices;			// prices of the options
 	std::vector<double> implied_vols;	// implied volatility of the prices
 

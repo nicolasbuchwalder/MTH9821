@@ -3,8 +3,6 @@
 
 #include "BoxMuller.h"
 
-#include "LCG.h"
-
 #include <cmath>
 #include <tuple>
 

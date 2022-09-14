@@ -4,6 +4,9 @@
 #ifndef BOXMULLER_h
 #define BOXMULLER_h
 
+
+#include "LCG.h"
+
 #include <tuple>
 
 class BoxMuller {
