@@ -9,9 +9,7 @@
 
 #include <vector>
 #include "EuropeanOption.hpp"
-
-// forward definition of the class
-class EuropeanOption;
+#include "BasketOption.hpp"
 
 class OneStepMC {
 private:
@@ -26,6 +24,7 @@ public:
     void MomentMatching(const EuropeanOption& option) const;
     void MMCV(const EuropeanOption& option) const;
 
+    void Price(const BasketOption& option) const;
 };
 
 #endif /* OneStepMC_hpp */

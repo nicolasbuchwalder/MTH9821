@@ -49,9 +49,11 @@ void OneStepMC::ControlVariate(const EuropeanOption& option) const {
 
         // GENERATE PRICES AND GREEKS FOR EVERY ITERATION
         for (std::size_t i = begins[loop] * 10000; i < ends[loop] * 10000; i++) {
-            double S_i, V_i;
 
-            std::tie(S_i, V_i) = option.SpotAndPut(*(zit++));
+            auto SP = option.SpotAndPut(*(zit++));
+
+            double S_i = SP[0];
+            double V_i = SP[1];
             
             // Sum of outcome: S, S^2, V, S*V
             S_sum += S_i;
@@ -241,67 +243,42 @@ void OneStepMC::MMCV(const EuropeanOption& option) const {
     std::cout << std::endl;
 }
 
-//// function to estimate price and greeks of an option with Monte Carlo
-//// with different random number generator
-//void OneStepMC::DirectSimulation(const EuropeanOption& option) {
-//
-//    // GENERATE SAMPLES
-//    z_.resize(512 * 10000);
-//
-//    std::generate(z_.begin(), z_.end(), ITM::standard_normal);
-//
-//    auto zit = z_.cbegin();
-//
-//    // PREPARE FOR MONTE CARLO
-//    std::array<double, 6> sum_of_outcome;
-//    std::fill(sum_of_outcome.begin(), sum_of_outcome.end(), 0.);
-//
-//    // BEGINNING AND END OF SUBSEQUENCES
-//    std::vector<std::size_t> begins({ 0, 1, 2, 4, 8, 16, 32, 64, 128, 256 });
-//    std::vector<std::size_t> ends({ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 });
-//
-//    std::cout << std::fixed << std::setprecision(6);
-//    std::cout << "======= DIRECT SIMULATION =======" << std::endl;
-//    std::cout << "N:\t\tC         error(C)  Delta(C)  error(Delta(C)) \tVega(C)    err(Vega(C))\tP         error(P)   Delta(P)  err(Delta(P))\tVega(P)    err(Vega(P))" << std::endl;
-//
-//    for (std::size_t loop = 0; loop < begins.size(); loop++) {
-//
-//        // GENERATE PRICES AND GREEKS FOR EVERY ITERATION
-//        for (std::size_t i = begins[loop] * 10000; i < ends[loop] * 10000; i++) {
-//            std::array<double, 6> out = option.Outcome(*(zit++));
-//
-//            for (std::size_t j = 0; j < 6; j++) {
-//                sum_of_outcome[j] += out[j];
-//            }
-//
-//        }
-//
-//        // FIND THE CURRENT MEAN (MONTE CARLO ESTIMATE)
-//        std::array<double, 6> mean;
-//        std::transform(sum_of_outcome.cbegin(), sum_of_outcome.cend(), mean.begin(), [&](double sum)->double {
-//            return sum / (ends[loop] * 10000.);
-//            });
-//
-//        // OUTPUT RESULTS
-//
-//        std::cout << ends[loop] * 10000 <<":     \t";
-//
-//        // call results
-//        std::cout << mean[0] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[0] - option.Call()) << ", ";
-//        std::cout << mean[1] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[1] - option.DeltaCall()) << ",  \t";
-//        std::cout << mean[2] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[2] - option.VegaCall()) << ",  \t";
-//
-//        // put results
-//        std::cout << mean[3] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[3] - option.Put()) << ", ";
-//        std::cout << mean[4] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[4] - option.DeltaPut()) << ", \t";
-//        std::cout << mean[5] << ", ";
-//        std::cout << std::sqrt(10000. * ends[loop]) * std::abs(mean[5] - option.VegaPut()) << std::endl;
-//    }
-//
-//}
-//
+void OneStepMC::Price(const BasketOption& option) const {
+    // Prepare for Monte Carlo
+    double V_sum = 0.;
+    
+    // BEGINNING AND END OF SUBSEQUENCES
+    std::vector<std::size_t> begins({ 0, 1, 2, 4, 8, 16, 32, 64, 128, 256 });
+    std::vector<std::size_t> ends({ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 });
+    
+    std::cout << std::fixed << std::setprecision(6);
+    std::cout << "======= Basket Option =======" << std::endl;
+    
+    auto zit = z_.cbegin();
+    
+    for (std::size_t loop = 0; loop < begins.size(); loop++) {
+
+        // GENERATE PRICES AND GREEKS FOR EVERY ITERATION
+        while (zit != (z_.cbegin() + ends[loop] * 10000)) {
+            
+            double z1 = *(zit++);
+            double z2 = *(zit++);
+            
+            V_sum += option.Price(z1, z2);
+        }
+
+        double N = ends[loop] * 10000;
+        
+        // FIND THE CURRENT MEAN (MONTE CARLO ESTIMATE)
+        double V_hat = V_sum / N * 2.;
+
+        // OUTPUT RESULTS
+
+        std::cout << std::setw(7) << ends[loop] * 10000 <<": ";
+
+        // call results
+        std::cout << std::setw(8) << V_hat << std::endl;
+    }
+    
+    std::cout << std::endl;
+}
